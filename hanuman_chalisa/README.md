@@ -8,6 +8,7 @@ YouTube video / 24×7 live stream on your spiritual channel.
 | `make_cover.py` | Draws the 1920×1080 cover (video background) + 1280×720 thumbnail |
 | `make_video.py` | Song + cover → upload-ready **MP4** (H.264 + AAC, 1080p30) |
 | `stream_live.sh` | Loops that MP4 to your YouTube live stream key, forever |
+| `glabs_art.py` | Makes Hanuman ji artwork with G-Labs Studio (Meta Muse / Meta AI) and puts it in the cover |
 | `metadata.json` | Trending title, description and tags (Hindi + English) |
 | `out/cover.png`, `out/cover-thumb.jpg` | Ready-made cover and thumbnail |
 | `fonts/` | Noto Devanagari + Noto Sans (SIL OFL, see `fonts/OFL.txt`) |
@@ -23,6 +24,21 @@ python3 make_cover.py --day "मंगलवार स्पेशल"          
 python3 make_cover.py --tagline "11 बार पाठ"             # line next to LIVE
 python3 make_cover.py --no-live                        # normal (non-live) upload
 ```
+
+### Hanuman ji artwork with G-Labs Studio (Meta Muse / Meta AI)
+
+Run this on the PC where G-Labs Studio is open (**Webhook** tab → **Start**, MAX plan,
+a Muse or Meta AI account logged in):
+
+```bash
+set GLABS_API_KEY=key-from-webhook-tab          # Windows (export ... on Linux/macOS)
+python3 glabs_art.py                            # Meta Muse, 2 images, 1st goes in the cover
+python3 glabs_art.py --engine meta              # Meta AI instead
+python3 glabs_art.py --count 4 --pick 3         # make 4, use the 3rd
+```
+
+Images are saved to `out/glabs/` and `out/cover.png` / `out/cover-thumb.jpg` are rebuilt
+with the chosen one. Then run `make_video.py` again so the MP4 uses the new cover.
 
 ## 2. Make the MP4
 
