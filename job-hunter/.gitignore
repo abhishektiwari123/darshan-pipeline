@@ -1,0 +1,6 @@
+config.yaml
+data/
+*.pdf
+resume.md
+__pycache__/
+.venv/

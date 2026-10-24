@@ -1,0 +1,73 @@
+# Copy this file to config.yaml and fill it in. config.yaml is git-ignored.
+
+# --- You -------------------------------------------------------------------
+profile:
+  first_name: Abhishek
+  last_name: Tiwari
+  email: you@example.com
+  phone: "+91 90000 00000"
+  location: Bengaluru, India
+  linkedin: https://www.linkedin.com/in/your-handle
+  github: https://github.com/your-handle
+  website: ""
+  current_company: ""
+  current_title: ""
+  years_experience: 3
+  notice_period: "30 days"
+  current_ctc: ""          # leave blank to have forms ask you
+  expected_ctc: ""
+  work_authorization: "Indian citizen; no sponsorship needed in India"
+  willing_to_relocate: true
+
+resume:
+  pdf: resume.pdf          # uploaded to application forms
+  text: resume.md          # optional plain-text copy; if missing, the PDF is sent to Claude
+
+# Answers to questions forms often ask. Claude reuses these instead of guessing.
+answers:
+  "How did you hear about us?": "Company careers page"
+  "Are you willing to work from office?": "Yes, hybrid or on-site"
+  "Gender": "Prefer not to say"
+
+# --- What you want -----------------------------------------------------------
+preferences: |
+  Backend / Python / data engineering roles, 2-6 years experience.
+  Prefer product companies and startups. Remote or Bengaluru/Pune/Hyderabad.
+  Not interested in: sales, support, unpaid internships, pure frontend, QA-only roles.
+
+# --- Where to look -----------------------------------------------------------
+search:
+  terms: ["python developer", "backend engineer", "data engineer"]
+  locations: ["Bengaluru", "Remote"]
+  # JobSpy sites: linkedin, indeed, glassdoor, google, naukri, zip_recruiter, bayt
+  sites: ["linkedin", "indeed", "naukri", "google"]
+  country_indeed: india
+  hours_old: 72            # only jobs posted in the last N hours
+  results_per_search: 25
+  is_remote: false
+  title_must_include: []   # e.g. ["engineer", "developer"]
+  title_exclude: ["senior staff", "principal", "intern", "sales", "manager"]
+
+# Companies whose Greenhouse / Lever / Ashby boards to pull directly.
+# These are the jobs the applier fills in most reliably.
+# Use the board slug from the URL, e.g. job-boards.greenhouse.io/<slug>
+companies:
+  greenhouse: []           # e.g. ["stripe", "databricks"]
+  lever: []                # e.g. ["palantir"]
+  ashby: []                # e.g. ["openai"]
+  location_filter: ["india", "bengaluru", "bangalore", "remote"]   # keep board jobs mentioning any of these; [] keeps all
+
+# --- Shortlisting -----------------------------------------------------------
+scoring:
+  model: claude-opus-5-5
+  effort: low              # low | medium | high
+  shortlist_min_score: 70  # 0-100
+
+# --- Applying ---------------------------------------------------------------
+apply:
+  headless: false          # watch the browser fill each form
+  max_per_run: 10
+  # false: fill the form, then wait for you to review and press Submit yourself.
+  # true: click Submit automatically (only on Greenhouse / Lever / Ashby forms).
+  auto_submit: false
+  browser_path: ""         # optional: path to your own Chrome; blank uses Playwright's Chromium
