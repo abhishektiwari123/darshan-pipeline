@@ -13,9 +13,13 @@ A small, private command-line tool that manages **live broadcasts on YouTube cha
 | `key <label> <stream-name>` | Get or create a reusable live stream, print its RTMP ingestion key |
 | `go-live <label> <stream-name> <title>` | Create a broadcast (auto-start, no archive, DVR off) bound to that stream |
 | `retitle <label> <video-id> <title>` | Update a running broadcast's title (daily dated titles) |
+| `meta <label> <video-id> <metadata.json> [credit]` | Set title, description, tags and category from a metadata file |
+| `thumbnail <label> <video-id> <image>` | Upload a custom thumbnail |
 | `cleanup <label>` | Delete the operator's own ended/stray broadcasts |
 
 The actual video feed is produced separately (ffmpeg pushing RTMP); this tool only manages broadcast metadata.
+
+`meta` and `thumbnail` set a broadcast's description/tags and custom thumbnail. A ready-made **Hanuman Chalisa शनिवार स्पेशल** template (cover, MP4 builder, 24×7 loop streamer, title/description/tags) lives in [`hanuman_chalisa/`](hanuman_chalisa/README.md).
 
 ## Setup
 

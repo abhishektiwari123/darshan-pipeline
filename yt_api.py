@@ -15,6 +15,12 @@ Commands:
   retitle <label> <video-id> <title>
                                    rename a running broadcast (daily dated titles
                                    without interrupting the stream)
+  meta <label> <video-id> <metadata.json> [audio credit]
+                                   set title/description/tags/category from a
+                                   metadata file ({date} and {audio_credit} are
+                                   filled in), e.g. hanuman_chalisa/metadata.json
+  thumbnail <label> <video-id> <image>
+                                   upload a custom thumbnail (jpg/png, < 2 MB)
   cleanup <label>                  delete stray archived VODs of ended broadcasts
 
 Typical setup per channel:
@@ -207,6 +213,43 @@ def cmd_retitle(label, video_id, title):
     print(f"retitled {video_id} -> {title}")
 
 
+def cmd_meta(label, video_id, path, credit="-"):
+    with open(path, encoding="utf-8") as f:
+        m = json.load(f)
+    fill = {"date": time.strftime("%d %B %Y"), "audio_credit": credit}
+    cur = _api(label, "GET", "videos", {"part": "snippet", "id": video_id})
+    if not cur.get("items"):
+        sys.exit("video not found")
+    sn = cur["items"][0]["snippet"]
+    sn["title"] = m["title"].format(**fill)
+    sn["description"] = m["description"].format(**fill)
+    sn["tags"] = m["tags"]
+    for k in ("categoryId", "defaultLanguage", "defaultAudioLanguage"):
+        if k in m:
+            sn[k] = m[k]
+    _api(label, "PUT", "videos", {"part": "snippet"},
+         {"id": video_id, "snippet": sn})
+    print(f"metadata set on {video_id}: {sn['title']}")
+
+
+def cmd_thumbnail(label, video_id, path):
+    with open(path, "rb") as f:
+        data = f.read()
+    ctype = "image/png" if path.lower().endswith(".png") else "image/jpeg"
+    req = urllib.request.Request(
+        "https://www.googleapis.com/upload/youtube/v3/thumbnails/set?"
+        + urllib.parse.urlencode({"videoId": video_id}),
+        data=data, method="POST",
+        headers={"Authorization": f"Bearer {_access_token(label)}",
+                 "Content-Type": ctype})
+    try:
+        with urllib.request.urlopen(req) as r:
+            r.read()
+    except urllib.error.HTTPError as e:
+        sys.exit(f"thumbnail upload failed {e.code}: {e.read().decode()[:500]}")
+    print(f"thumbnail set on {video_id}")
+
+
 def cmd_cleanup(label):
     r = _api(label, "GET", "liveBroadcasts",
              {"part": "id,status,snippet", "mine": "true", "maxResults": "50"})
@@ -232,6 +275,10 @@ if __name__ == "__main__":
             cmd_go_live(a[2], a[3], " ".join(a[4:]))
         elif len(a) >= 5 and a[1] == "retitle":
             cmd_retitle(a[2], a[3], " ".join(a[4:]))
+        elif len(a) >= 5 and a[1] == "meta":
+            cmd_meta(a[2], a[3], a[4], " ".join(a[5:]) or "-")
+        elif len(a) >= 5 and a[1] == "thumbnail":
+            cmd_thumbnail(a[2], a[3], a[4])
         elif len(a) >= 3 and a[1] == "cleanup":
             cmd_cleanup(a[2])
         else:
